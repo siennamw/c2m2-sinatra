@@ -1,0 +1,19 @@
+<h2>Suggest a Resource</h2>
+<form class="resource-suggest" method="post" action="/suggest">
+  <label for="rs_name">Your Name *</label>
+  <input type="text" id="rs_name" name="rs_name" value="<%= params[:rs_name] || '' %>" required />
+  <label for="rs_email">Your Email *</label>
+  <input type="email" id="rs_email" name="rs_email" value="<%= params[:rs_email] || '' %>" required />
+  <label for="rs_composer">Composer(s) Concerned</label>
+  <input type="text" id="rs_composer" name="rs_composer" value="<%= params[:rs_composer] || '' %>" />
+  <label for="rs_works">Major Work(s) and/or Film(s) Concerned</label>
+  <input type="text" id="rs_works" name="rs_works" value="<%= params[:rs_works] || '' %>" />
+  <label for="rs_link">Link to Resource</label>
+  <input type="url" id="rs_link" name="rs_link" value="<%= params[:rs_link] || '' %>" />
+  <label for="rs_location">Location (name of library, repository, database...)</label>
+  <input type="text" id="rs_location" name="rs_location" value="<%= params[:rs_location] || '' %>" />
+  <label for="rs_comments">Comments</label>
+  <textarea id="rs_comments" name="rs_comments" cols="40" rows="100"><%= params[:rs_comments] || '' %></textarea>
+  <div class="g-recaptcha" data-sitekey="6LfFqSAUAAAAAAgzNW9BgPfnmPzwXXJvcKDbqXRT"></div>
+  <input class="button-primary" type="submit" value="Submit" />
+</form>

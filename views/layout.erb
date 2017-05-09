@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>C2M2</title>
+
+  <link rel="apple-touch-icon" sizes="57x57" href="/images/icons/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/images/icons/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/images/icons/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/icons/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/images/icons/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/images/icons/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/images/icons/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/images/icons/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192"  href="/images/icons/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/images/icons/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons/favicon-16x16.png">
+  <link rel="manifest" href="/images/icons/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/images/icons/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+
+  <link rel="stylesheet" href="/style.css" type="text/css"/>
+  <script src="/jquery-3.2.1.min.js"></script>
+  <script src="/sienna-boilerplate/sienna-boilerplate.js"></script>
+  <script src='https://www.google.com/recaptcha/api.js'></script>
+
+</head>
+
+<body>
+<header>
+  <div class="container">
+    <div class="center-text">
+      <img class="logo" src="images/c2m2_logo.png"/></h1>
+      <h1 class="title">Collections of Cinema and Media Music</h1>
+    </div>
+    <nav id="main-nav">
+      <button class="nav-toggle button-primary" aria-expanded="false" onclick="toggleshow('#nav-menu');">Show/Hide
+        Menu
+      </button>
+      <ul id="nav-menu">
+        <li><a href="/">Home</a></li>
+        <li><a href="/vision">Vision &amp; Design</a></li>
+        <li><a href="/why">Why C2M2?</a></li>
+        <li><a href="#">External Links</a>
+          <ul>
+            <li><a href="http://www.michaelwharris.net/" target="new">Michael W. Harris:
+              Archivist and Film
+              Musicologist</a>
+            <li>
+              <a href="http://www.thetemptrack.com" target="new">The Temp Track</a>
+            </li>
+            <li>
+              <a href="http://www.siennamwood.com" target="new">Sienna M. Wood: Musicologist
+                and Web Developer</a>
+            </li>
+          </ul>
+        </li>
+        <li><a href="/suggest">Suggest a Resource</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main>
+  <div class="container">
+    <% if session[:message] %>
+        <p class="message"><%= session.delete(:message) %></p>
+    <% end %>
+    <%= yield %>
+  </div>
+</main>
+<div class="container">
+<footer>
+  <p>Copyright &copy;
+    <a href="http://www.michaelwharris.net/" target="new">Michael W. Harris</a>
+    and <a href="http://www.siennamwood.com" target="new">Sienna M. Wood</a>,
+    2017</p>
+</footer>
+</div>
+</body>
+</html>

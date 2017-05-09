@@ -1,0 +1,11 @@
+<h2>Contact Us</h2>
+<form class="contact" method="post" action="/contact">
+  <label for="contact_name">Your Name *</label>
+  <input type="text" id="contact_name" name="contact_name" value="<%= params[:contact_name] || '' %>" required />
+  <label for="contact_email">Your Email *</label>
+  <input type="email" id="contact_email" name="contact_email" value="<%= params[:contact_email] || '' %>" required />
+  <label for="contact_message">Message</label>
+  <textarea id="contact_message" name="contact_message" cols="40" rows="100"><%= params[:contact_message] || '' %></textarea>
+  <div class="g-recaptcha" data-sitekey="6LfFqSAUAAAAAAgzNW9BgPfnmPzwXXJvcKDbqXRT"></div>
+  <input class="button-primary" type="submit" value="Submit" />
+</form>

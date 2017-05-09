@@ -1,0 +1,5 @@
+# compiled CSS #
+public/style.css
+
+# .env with sensitive info #
+.env
