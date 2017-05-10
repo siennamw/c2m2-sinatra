@@ -15,7 +15,7 @@
   <link rel="apple-touch-icon" sizes="144x144" href="/images/icons/apple-icon-144x144.png">
   <link rel="apple-touch-icon" sizes="152x152" href="/images/icons/apple-icon-152x152.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/apple-icon-180x180.png">
-  <link rel="icon" type="image/png" sizes="192x192"  href="/images/icons/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/images/icons/android-icon-192x192.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="96x96" href="/images/icons/favicon-96x96.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/icons/favicon-16x16.png">
@@ -32,8 +32,8 @@
 </head>
 
 <body>
-<header>
-  <div class="container">
+<div class="container">
+  <header>
     <div class="center-text">
       <img class="logo" src="images/c2m2_logo.png"/></h1>
       <h1 class="title">Collections of Cinema and Media Music</h1>
@@ -48,14 +48,17 @@
         <li><a href="/why">Why C2M2?</a></li>
         <li><a href="#">External Links</a>
           <ul>
-            <li><a href="http://www.michaelwharris.net/" target="new">Michael W. Harris:
+            <li><a href="http://www.michaelwharris.net/" target="new">Michael W.
+              Harris:
               Archivist and Film
               Musicologist</a>
             <li>
-              <a href="http://www.thetemptrack.com" target="new">The Temp Track</a>
+              <a href="http://www.thetemptrack.com" target="new">The Temp
+                Track</a>
             </li>
             <li>
-              <a href="http://www.siennamwood.com" target="new">Sienna M. Wood: Musicologist
+              <a href="http://www.siennamwood.com" target="new">Sienna M. Wood:
+                Musicologist
                 and Web Developer</a>
             </li>
           </ul>
@@ -64,23 +67,20 @@
         <li><a href="/contact">Contact</a></li>
       </ul>
     </nav>
-  </div>
-</header>
-<main>
-  <div class="container">
+  </header>
+  <main>
     <% if session[:message] %>
         <p class="message"><%= session.delete(:message) %></p>
     <% end %>
     <%= yield %>
-  </div>
-</main>
-<div class="container">
-<footer>
-  <p>Copyright &copy;
-    <a href="http://www.michaelwharris.net/" target="new">Michael W. Harris</a>
-    and <a href="http://www.siennamwood.com" target="new">Sienna M. Wood</a>,
-    2017</p>
-</footer>
+  </main>
+  <footer>
+    <p>Copyright &copy;
+      <a href="http://www.michaelwharris.net/" target="new">Michael W.
+        Harris</a>
+      and <a href="http://www.siennamwood.com" target="new">Sienna M. Wood</a>,
+      2017</p>
+  </footer>
 </div>
 </body>
 </html>
