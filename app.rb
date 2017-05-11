@@ -2,7 +2,6 @@ require 'sinatra'
 require 'sinatra/reloader' if development?
 require 'dotenv/load'
 require 'tilt/erubis'
-require 'redcarpet'
 require 'json'
 require 'graphql'
 require 'pony'
