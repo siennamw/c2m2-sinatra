@@ -25,6 +25,7 @@ GEM
     pony (1.11)
       mail (>= 2.0)
     public_suffix (2.0.5)
+    puma (3.8.2)
     rack (2.0.2)
     rack-protection (2.0.0)
       rack
@@ -67,10 +68,14 @@ DEPENDENCIES
   graphql
   minitest
   pony
+  puma
   simplecov
   sinatra
   sinatra-contrib
   unirest
 
+RUBY VERSION
+   ruby 2.3.0p0
+
 BUNDLED WITH
-   1.14.3
+   1.14.6
