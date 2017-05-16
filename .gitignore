@@ -1,5 +1,5 @@
 # compiled CSS #
-public/style.css
+public/css/style.css
 
 # .env with sensitive info #
 .env
