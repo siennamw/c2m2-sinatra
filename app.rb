@@ -92,3 +92,6 @@ post '/contact' do
   end
 end
 
+get '/search' do
+  erb :search
+end

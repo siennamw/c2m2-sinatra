@@ -1,0 +1,28 @@
+<h2>Advanced Search</h2>
+<form class="advanced-search">
+  <label for="keywords">Keywords</label>
+  <input type="text" id="keywords" name="keywords" class="u-full-width" tabindex="1" value="<%= params[:keywords] || '' %>" />
+  <label for="composer">Composer</label>
+  <input type="text" id="composer" name="composer" class="u-full-width" tabindex="2" value="<%= params[:composer] || '' %>" />
+  <label for="film_title">Film Title</label>
+  <input type="text" id="film_title" name="film_title" class="u-full-width" tabindex="3" value="<%= params[:film_title] || '' %>" />
+  <label for="director">Director</label>
+  <input type="text" id="director" name="director" class="u-full-width" tabindex="4" value="<%= params[:director] || '' %>" />
+  <label>Date Range</label>
+  <div class="row">
+    <div class="six columns">
+      <label for="min-date">From</label>
+      <input type="number" id="min_date" name="min_date" min="1900" max="9999" class="u-full-width" tabindex="5" value="<%= params[:min_date] || '1900' %>" />
+    </div>
+    <div class="six columns">
+      <label for="max-date">To</label>
+      <input type="number" id="max_date" name="max_date" min="1900" max="9999" class="u-full-width" tabindex="6" value="<%= params[:max_date] || '' %>" />
+    </div>
+  </div>
+  <label for="production-co">Production Company</label>
+  <input type="text" id="production_co" name="production_co" class="u-full-width" tabindex="7" value="<%= params[:production_co] || '' %>" />
+  <label for="country">Country</label>
+  <input type="text" id="country" name="country" class="u-full-width" tabindex="8" value="<%= params[:country] || '' %>" />
+  <div class="g-recaptcha" data-sitekey="6LfFqSAUAAAAAAgzNW9BgPfnmPzwXXJvcKDbqXRT"></div>
+  <input class="button-primary" type="submit" value="Submit" tabindex="9" />
+</form>

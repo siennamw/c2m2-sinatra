@@ -25,15 +25,21 @@ p.message {
   margin-bottom: 1rem;
 }
 
-form {
-  input, textarea {
-    width: 100%;
-  }
+p.caption {
+  font-style: italic;
+  font-size: 90%;
+  text-align: center;
+}
 
-  .button-primary {
+form {
+  input[type='submit'] {
     display: block;
     margin: 2.5rem auto;
     width: 60%;
+
+    &.button-primary:focus, &.button-primary:hover {
+      background-color: darken(@primary, 10%);
+    }
   }
 
   .g-recaptcha > div {
@@ -42,6 +48,7 @@ form {
 }
 
 footer {
+  clear: both;
   border-top: solid @light-gray 1px;
   margin: 5rem 0 0 0;
   padding: 3rem 0;
