@@ -9,7 +9,6 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.2.1)
     erubis (2.7.0)
-    graphql (1.5.12)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     json (2.1.0)
@@ -22,6 +21,7 @@ GEM
     multi_json (1.12.1)
     mustermann (1.0.0)
     netrc (0.11.0)
+    pg (0.20.0)
     pony (1.11)
       mail (>= 2.0)
     public_suffix (2.0.5)
@@ -65,8 +65,8 @@ PLATFORMS
 DEPENDENCIES
   dotenv
   erubis
-  graphql
   minitest
+  pg
   pony
   puma
   simplecov

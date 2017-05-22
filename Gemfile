@@ -6,11 +6,12 @@ gem 'sinatra'
 gem 'sinatra-contrib' # for sinatra/reloader
 gem 'erubis'
 
-gem 'graphql'
-gem 'pony'
-gem 'unirest'
-gem 'dotenv'
+gem 'pg' # PostgresQL
+gem 'pony' # emailer
+gem 'unirest' # HTTP requests for reCaptcha
+gem 'dotenv' # environment variables
 
+# testing
 gem 'minitest'
 gem 'simplecov'
 
