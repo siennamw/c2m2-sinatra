@@ -1,0 +1,84 @@
+<h3 class="center-text"><%= @result[:title] %>
+  <% if @result[:secondary_title] %>
+      : <%= @result[:secondary_title] %>
+  <% end %>
+</h3>
+
+<table class="u-full-width">
+  <tbody>
+  <tr>
+    <th>Composer(s)</th>
+    <td>
+      <% @result[:composers].each_index do |index| %>
+          <a href="/composer/<%= @result[:composer_ids][index] %>">
+            <%= @result[:composers][index] %>
+          </a><br />
+      <% end %>
+    </td>
+  </tr>
+  <tr>
+    <th>Director(s)</th>
+    <td>
+      <% @result[:directors].each_index do |index| %>
+          <a href="/director/<%= @result[:director_ids][index] %>">
+            <%= @result[:directors][index] %>
+          </a><br />
+      <% end %>
+    </td>
+  </tr>
+  <tr>
+    <th>Year</th>
+    <td>
+      <%= @result[:year] %>
+    </td>
+  </tr>
+  <tr>
+    <th>Finding Aid Link</th>
+    <td>
+      <a href="<%= @result[:finding_aid_link] %>" target="new">
+        <%= @result[:finding_aid_link] %>
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <th>Country</th>
+    <td>
+      <a href="/country/<%= @result[:country_id] %>">
+        <%= @result[:country] %>
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <th>Media Type</th>
+    <td>
+      <a href="/media_type/<%= @result[:media_type_id] %>">
+        <%= @result[:media_type] %>
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <th>Collection</th>
+    <td>
+      <a href="/collection/<%= @result[:collection_id] %>">
+        <%= @result[:collection] %>
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <th>Material Format</th>
+    <td>
+      <a href="/material_format/<%= @result[:material_format_id] %>">
+        <%= @result[:material_format] %>
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <th>Cataloger</th>
+    <td>
+      <a href="/cataloger/<%= @result[:cataloger_id] %>">
+        <%= @result[:cataloger] %>
+      </a>
+    </td>
+  </tr>
+  </tbody>
+</table>

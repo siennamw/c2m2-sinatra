@@ -1,25 +1,36 @@
 require 'sinatra'
-require 'sinatra/reloader' if development?
 require 'dotenv/load'
 require 'tilt/erubis'
 require 'json'
-require 'graphql'
 require 'pony'
 require 'unirest'
+
+require_relative 'lib/database_persistence'
 
 configure do
   enable :sessions
   set :session_secret, ENV['SESSION_SECRET']
+  set :erb, :escape_html => true
+end
+
+configure(:development) do
+  require 'sinatra/reloader'
+  also_reload './lib/database_persistence.rb'
+end
+
+
+before do
+  @storage = DatabasePersistence.new(logger)
 end
 
 def recaptcha_passed?
   recaptcha_response = Unirest.post(
-    'https://www.google.com/recaptcha/api/siteverify',
-    headers: { 'Accept' => 'application/json' },
-    parameters: {
-      secret: ENV['RECAPTCHA_SECRET'],
-      response: params['g-recaptcha-response']
-    }
+  'https://www.google.com/recaptcha/api/siteverify',
+  headers: { 'Accept' => 'application/json' },
+  parameters: {
+  secret: ENV['RECAPTCHA_SECRET'],
+  response: params['g-recaptcha-response']
+  }
   )
   recaptcha_response.body['success']
 end
@@ -94,4 +105,58 @@ end
 
 get '/search' do
   erb :search
+end
+
+get '/work/:work_id' do
+  @result = @storage.work_details(params[:work_id].to_i)
+  erb :work
+end
+
+get '/browse' do
+  @heading = 'Browse'
+  @info = 'Listings sorted alphabetically by work title.'
+  @result = @storage.browse_all
+  erb :browse
+end
+
+get '/composer/:id' do
+  @info = 'Listings sorted alphabetically by work title.'
+  @heading, @result = @storage.browse_composer(params[:id])
+  erb :browse
+end
+
+get '/director/:id' do
+  @info = 'Listings sorted alphabetically by work title.'
+  @heading, @result = @storage.browse_director(params[:id])
+  erb :browse
+end
+
+get '/country/:id' do
+  @info = 'Listings sorted alphabetically by work title.'
+  @heading, @result = @storage.browse_country(params[:id])
+  erb :browse
+end
+
+get '/media_type/:id' do
+  @info = 'Listings sorted alphabetically by work title.'
+  @heading, @result = @storage.browse_media_type(params[:id])
+  erb :browse
+end
+
+get '/collection/:id' do
+  @info = 'Listings sorted alphabetically by work title.'
+  @heading, @result = @storage.browse_collection(params[:id])
+  erb :browse
+end
+
+get '/material_format/:id' do
+  @info = 'Listings sorted alphabetically by work title.'
+  @heading, @result = @storage.browse_material_format(params[:id])
+  erb :browse
+end
+
+get '/cataloger/:id' do
+  @info = 'Listings sorted alphabetically by work title.'
+  @heading, @result = @storage.browse_cataloger(params[:id])
+  erb :browse
 end

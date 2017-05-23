@@ -35,7 +35,7 @@
 <div class="container">
   <header>
     <div class="center-text">
-      <a href="/"><img class="logo" src="images/c2m2_logo.png"/></a>
+      <a href="/"><img class="logo" src="/images/c2m2_logo.png"/></a>
       <h1 class="title"><a href="/">Collections of Cinema and Media Music</a></h1>
     </div>
     <nav id="main-nav">
@@ -44,6 +44,7 @@
       </button>
       <ul id="nav-menu">
         <li><a href="/">Home</a></li>
+        <li><a href="/browse">Browse</a></li>
         <li><a href="/vision">Vision &amp; Design</a></li>
         <li><a href="/why">Why C2M2?</a></li>
         <li><a href="#">External Links</a>
@@ -72,7 +73,7 @@
     <% if session[:message] %>
         <p class="message"><%= session.delete(:message) %></p>
     <% end %>
-    <%= yield %>
+    <%== yield %>
   </main>
   <footer>
     <p>Copyright &copy;

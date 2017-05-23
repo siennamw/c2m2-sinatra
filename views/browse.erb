@@ -1,0 +1,36 @@
+<h2 class="center-text"><%= @heading %></h2>
+
+<% if @info %>
+    <h5 class="center-text"><%= @info %></h5>
+<% end %>
+
+<table class="u-full-width">
+  <tbody>
+  <% @result.each do |row| %>
+      <tr>
+        <td colspan="4">
+          <h4>
+            <a href="/work/<%= row[:id] %>">
+              <%= row[:title] %>
+              <% if row[:secondary_title] %>
+                  : <%= row[:secondary_title] %>
+              <% end %>
+            </a>
+          </h4>
+        </td>
+      </tr>
+      <tr>
+        <th>Year</th>
+        <th>Composer</th>
+        <th>Director</th>
+        <th>Country</th>
+      </tr>
+      <tr>
+        <td><%= row[:year] %></td>
+        <td><%= row[:composer] %></td>
+        <td><%= row[:director] %></td>
+        <td><%= row[:country] %></td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
