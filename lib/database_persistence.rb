@@ -2,7 +2,7 @@ require 'pg'
 
 class DatabasePersistence
   def initialize(logger)
-    @db = PG.connect(dbname: ENV['DATABASE_NAME'])
+    @db = PG.connect(dbname: 'c2m2') #ENV['DATABASE_NAME']
     @logger = logger
   end
 
@@ -136,7 +136,40 @@ class DatabasePersistence
   end
 
   def browse_collection(id)
-    ["Collection: #{get_collection_name_by_id(id)}", nil]
+    sql = <<~SQL
+      SELECT
+          collections.id                              AS collection_id,
+          works.id                                  AS work_id,
+          works.title,
+          works.secondary_title,
+          countries.name                            AS country,
+          string_agg(DISTINCT directors.name, ', ') AS director,
+          string_agg(DISTINCT composers.name, ', ') AS composer,
+          works.year
+        FROM collections
+          LEFT JOIN works
+            ON works.collection_id = collections.id
+          LEFT JOIN work_composer
+            ON work_composer.work_id = works.id
+          LEFT JOIN composers
+            ON work_composer.composer_id = composers.id
+          LEFT JOIN work_director
+            ON work_director.work_id = works.id
+          LEFT JOIN directors
+            ON work_director.director_id = directors.id
+          LEFT JOIN countries
+            ON works.country_id = countries.id
+        WHERE collection_id = $1
+        GROUP BY works.id, works.title, works.secondary_title, countries.name,
+          works.year, collections.id
+        ORDER BY collections.id, works.title;
+    SQL
+
+    result = query(sql, id).map do |tuple|
+      tuple_to_list_hash(tuple)
+    end
+
+    ["Collection: #{get_collection_name_by_id(id)}", result]
   end
 
   def browse_material_format(id)
