@@ -160,3 +160,7 @@ get '/cataloger/:id' do
   @heading, @result = @storage.browse_cataloger(params[:id].to_i)
   erb :browse
 end
+
+not_found do
+  redirect '/'
+end
