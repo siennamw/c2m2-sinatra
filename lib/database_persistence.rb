@@ -6,11 +6,6 @@ class DatabasePersistence
     @logger = logger
   end
 
-  def query(statement, *params)
-    @logger.info("#{statement}: #{params}")
-    @db.exec_params(statement, params)
-  end
-
   def browse_all
     result = query('SELECT * FROM overview_by_work')
     result.map do |tuple|
@@ -19,71 +14,23 @@ class DatabasePersistence
   end
 
   def browse_composer(id)
-    sql = <<~SQL
-      SELECT
-          composers.id                              AS composer_id,
-          works.id                                  AS work_id,
-          works.title,
-          works.secondary_title,
-          countries.name                            AS country,
-          string_agg(DISTINCT directors.name, ', ') AS director,
-          string_agg(DISTINCT composers.name, ', ') AS composer,
-          works.year
-        FROM composers
-          INNER JOIN work_composer
-            ON work_composer.composer_id = composers.id
-          LEFT JOIN works
-            ON work_composer.work_id = works.id
-          LEFT JOIN countries
-            ON works.country_id = countries.id
-          LEFT JOIN work_director
-            ON work_director.work_id = works.id
-          LEFT JOIN directors
-            ON work_director.director_id = directors.id
-        WHERE composer_id = $1
-        GROUP BY works.id, works.title, works.secondary_title, countries.name,
-          works.year, composers.id
-        ORDER BY composers.id, works.title;
-    SQL
+    works_sql = 'SELECT work_id AS id FROM work_composer WHERE composer_id = $1'
 
-    result = query(sql, id).map do |tuple|
-      tuple_to_list_hash(tuple)
-    end
+    work_result = query(works_sql, id).map { |tuple| tuple['id'].to_i }.join(',')
+
+    sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{work_result})"
+    result = query(sql).map { |tuple| tuple_to_list_hash(tuple) }
 
     ["Composer: #{get_composer_name_by_id(id)}", result]
   end
 
   def browse_director(id)
-    sql = <<~SQL
-      SELECT
-          directors.id                              AS director_id,
-          works.id                                  AS work_id,
-          works.title,
-          works.secondary_title,
-          countries.name                            AS country,
-          string_agg(DISTINCT directors.name, ', ') AS director,
-          string_agg(DISTINCT composers.name, ', ') AS composer,
-          works.year
-        FROM directors
-          INNER JOIN work_director
-            ON work_director.director_id = directors.id
-          LEFT JOIN works
-            ON works.id = work_director.work_id
-          LEFT JOIN work_composer
-            ON work_composer.work_id = works.id
-          LEFT JOIN composers
-            ON work_composer.composer_id = composers.id
-          LEFT JOIN countries
-            ON works.country_id = countries.id
-        WHERE director_id = $1
-        GROUP BY works.id, works.title, works.secondary_title, countries.name,
-          works.year, directors.id
-        ORDER BY directors.id, works.title;
-    SQL
+    works_sql = 'SELECT work_id AS id FROM work_director WHERE director_id = $1'
 
-    result = query(sql, id).map do |tuple|
-      tuple_to_list_hash(tuple)
-    end
+    work_result = query(works_sql, id).map { |tuple| tuple['id'].to_i }.join(',')
+
+    sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{work_result})"
+    result = query(sql).map { |tuple| tuple_to_list_hash(tuple) }
 
     ["Director: #{get_director_name_by_id(id)}", result]
   end
@@ -101,7 +48,7 @@ class DatabasePersistence
   def browse_media_type(id)
     sql = <<~SQL
       SELECT
-          media_types.id                              AS media_type_id,
+          media_types.id                            AS media_type_id,
           works.id                                  AS work_id,
           works.title,
           works.secondary_title,
@@ -138,7 +85,7 @@ class DatabasePersistence
   def browse_collection(id)
     sql = <<~SQL
       SELECT
-          collections.id                              AS collection_id,
+          collections.id                            AS collection_id,
           works.id                                  AS work_id,
           works.title,
           works.secondary_title,
@@ -175,7 +122,7 @@ class DatabasePersistence
   def browse_material_format(id)
     sql = <<~SQL
       SELECT
-          material_formats.id                              AS material_format_id,
+          material_formats.id                       AS material_format_id,
           works.id                                  AS work_id,
           works.title,
           works.secondary_title,
@@ -212,7 +159,7 @@ class DatabasePersistence
   def browse_cataloger(id)
     sql = <<~SQL
       SELECT
-          catalogers.id                              AS cataloger_id,
+          catalogers.id                             AS cataloger_id,
           works.id                                  AS work_id,
           works.title,
           works.secondary_title,
@@ -253,9 +200,7 @@ class DatabasePersistence
     hash = { id: result['work_id'].to_i,
              title: result['title'],
              secondary_title: result['secondary_title'],
-             directors: result['directors'],
              director_ids: result['director_ids'],
-             composers: result['composers'],
              composer_ids: result['composer_ids'],
              year: result['year'].to_i,
              finding_aid_link: result['finding_aid_link'],
@@ -271,28 +216,36 @@ class DatabasePersistence
              cataloger: result['cataloger']
     }
 
-    # TODO: fix multiple directors/composers handling
+    if hash[:director_ids].include?('&&')
+      ids_director = hash[:director_ids].split('&&')
 
-    directors_array = hash[:directors].split('&&')
-    director_ids_array = hash[:director_ids].split('&&')
-    composers_array = hash[:composers].split('&&')
-    composer_ids_array = hash[:composer_ids].split('&&')
+      hash[:director_ids] = []
+      hash[:directors] = []
 
-    if hash[:directors] != directors_array
-      hash[:directors] = directors_array
-      hash[:director_ids] = director_ids_array
+      ids_director.each do |director_id|
+        hash[:director_ids] << director_id.to_i
+        hash[:directors] << get_director_name_by_id(director_id.to_i)
+      end
     else
-      hash[:directors] = [directors_array]
-      hash[:director_ids] = [director_ids_array]
+      hash[:directors] = [get_director_name_by_id(hash[:director_ids].to_i)]
+      hash[:director_ids] = [hash[:director_ids].to_i]
     end
 
-    if hash[:composers] != composers_array
-      hash[:composers] = composers_array
-      hash[:composer_ids] = composer_ids_array
+    if hash[:composer_ids].include?('&&')
+      ids_composer = hash[:composer_ids].split('&&')
+
+      hash[:composer_ids] = []
+      hash[:composers] = []
+
+      ids_composer.each do |composer_id|
+        hash[:composer_ids] << composer_id.to_i
+        hash[:composers] << get_composer_name_by_id(composer_id.to_i)
+      end
     else
-      hash[:composers] = [composers_array]
-      hash[:composer_ids] = [composer_ids_array]
+      hash[:composers] = [get_composer_name_by_id(hash[:composer_ids].to_i)]
+      hash[:composer_ids] = [hash[:composer_ids].to_i]
     end
+
 
     hash
   end
@@ -329,6 +282,11 @@ class DatabasePersistence
   end
 
   private
+
+  def query(statement, *params)
+    @logger.info("#{statement}: #{params}")
+    @db.exec_params(statement, params)
+  end
 
   def tuple_to_list_hash(tuple)
     { id: tuple['work_id'].to_i,

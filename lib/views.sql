@@ -25,34 +25,30 @@ CREATE VIEW overview_by_work AS
 
 CREATE VIEW work_details AS
   SELECT
-    works.id                                        AS work_id,
+    works.id                                                     AS work_id,
     works.title,
     works.secondary_title,
-    string_agg(DISTINCT directors.name, '&&')       AS directors,
-    string_agg(DISTINCT directors.id :: TEXT, '&&') AS director_ids,
-    string_agg(DISTINCT composers.name, '&&')       AS composers,
-    string_agg(DISTINCT composers.id :: TEXT, '&&') AS composer_ids,
+    string_agg(DISTINCT work_director.director_id :: TEXT,
+                        '&&')                                    AS director_ids,
+    string_agg(DISTINCT work_composer.composer_id :: TEXT,
+                        '&&')                                    AS composer_ids,
     works.year,
     works.finding_aid_link,
-    countries.id                                    AS country_id,
-    countries.name                                  AS country,
-    media_types.id                                  AS media_type_id,
-    media_types.name                                AS media_type,
-    collections.id                                  AS collection_id,
-    collections.name                                AS collection,
-    material_formats.id                             AS material_format_id,
-    material_formats.name                           AS material_format,
-    catalogers.id                                   AS cataloger_id,
-    catalogers.name                                 AS cataloger
+    countries.id                                                 AS country_id,
+    countries.name                                               AS country,
+    media_types.id                                               AS media_type_id,
+    media_types.name                                             AS media_type,
+    collections.id                                               AS collection_id,
+    collections.name                                             AS collection,
+    material_formats.id                                          AS material_format_id,
+    material_formats.name                                        AS material_format,
+    catalogers.id                                                AS cataloger_id,
+    catalogers.name                                              AS cataloger
   FROM works
     LEFT JOIN work_director
       ON work_director.work_id = works.id
-    LEFT JOIN directors
-      ON work_director.director_id = directors.id
     LEFT JOIN work_composer
       ON works.id = work_composer.work_id
-    LEFT JOIN composers
-      ON work_composer.composer_id = composers.id
     LEFT JOIN countries
       ON works.country_id = countries.id
     LEFT JOIN media_types
