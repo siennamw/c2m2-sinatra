@@ -19,8 +19,6 @@ class DatabasePersistence
   end
 
   def browse_composer(id)
-    composer = get_composer_name_by_id(id)
-
     sql = <<~SQL
       SELECT
           composers.id                              AS composer_id,
@@ -52,12 +50,10 @@ class DatabasePersistence
       tuple_to_list_hash(tuple)
     end
 
-    ["Composer: #{composer}", result]
+    ["Composer: #{get_composer_name_by_id(id)}", result]
   end
 
   def browse_director(id)
-    director = get_director_name_by_id(id)
-
     sql = <<~SQL
       SELECT
           directors.id                              AS director_id,
@@ -89,7 +85,7 @@ class DatabasePersistence
       tuple_to_list_hash(tuple)
     end
 
-    ["Director: #{director}", result]
+    ["Director: #{get_director_name_by_id(id)}", result]
   end
 
   def browse_country(id)
@@ -103,23 +99,52 @@ class DatabasePersistence
   end
 
   def browse_media_type(id)
-    media_type = get_media_type_name_by_id(id)
-    ["Media Type: #{media_type}", nil]
+    sql = <<~SQL
+      SELECT
+          media_types.id                              AS media_type_id,
+          works.id                                  AS work_id,
+          works.title,
+          works.secondary_title,
+          countries.name                            AS country,
+          string_agg(DISTINCT directors.name, ', ') AS director,
+          string_agg(DISTINCT composers.name, ', ') AS composer,
+          works.year
+        FROM media_types
+          LEFT JOIN works
+            ON works.media_type_id = media_types.id
+          LEFT JOIN work_composer
+            ON work_composer.work_id = works.id
+          LEFT JOIN composers
+            ON work_composer.composer_id = composers.id
+          LEFT JOIN work_director
+            ON work_director.work_id = works.id
+          LEFT JOIN directors
+            ON work_director.director_id = directors.id
+          LEFT JOIN countries
+            ON works.country_id = countries.id
+        WHERE media_type_id = $1
+        GROUP BY works.id, works.title, works.secondary_title, countries.name,
+          works.year, media_types.id
+        ORDER BY media_types.id, works.title;
+    SQL
+
+    result = query(sql, id).map do |tuple|
+      tuple_to_list_hash(tuple)
+    end
+
+    ["Media Type: #{get_media_type_name_by_id(id)}", result]
   end
 
   def browse_collection(id)
-    collection = get_collection_name_by_id(id)
-    ["Collection: #{collection}", nil]
+    ["Collection: #{get_collection_name_by_id(id)}", nil]
   end
 
   def browse_material_format(id)
-    material_format = get_material_format_name_by_id(id)
-    ["Material Format: #{material_format}", nil]
+    ["Material Format: #{get_material_format_name_by_id(id)}", nil]
   end
 
   def browse_cataloger(id)
-    cataloger = get_cataloger_name_by_id(id)
-    ["Cataloger: #{cataloger}", nil]
+    ["Cataloger: #{get_cataloger_name_by_id(id)}", nil]
   end
 
   def work_details(id)
