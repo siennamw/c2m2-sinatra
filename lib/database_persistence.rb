@@ -210,7 +210,40 @@ class DatabasePersistence
   end
 
   def browse_cataloger(id)
-    ["Cataloger: #{get_cataloger_name_by_id(id)}", nil]
+    sql = <<~SQL
+      SELECT
+          catalogers.id                              AS cataloger_id,
+          works.id                                  AS work_id,
+          works.title,
+          works.secondary_title,
+          countries.name                            AS country,
+          string_agg(DISTINCT directors.name, ', ') AS director,
+          string_agg(DISTINCT composers.name, ', ') AS composer,
+          works.year
+        FROM catalogers
+          LEFT JOIN works
+            ON works.cataloger_id = catalogers.id
+          LEFT JOIN work_composer
+            ON work_composer.work_id = works.id
+          LEFT JOIN composers
+            ON work_composer.composer_id = composers.id
+          LEFT JOIN work_director
+            ON work_director.work_id = works.id
+          LEFT JOIN directors
+            ON work_director.director_id = directors.id
+          LEFT JOIN countries
+            ON works.country_id = countries.id
+        WHERE cataloger_id = $1
+        GROUP BY works.id, works.title, works.secondary_title, countries.name,
+          works.year, catalogers.id
+        ORDER BY catalogers.id, works.title;
+    SQL
+
+    result = query(sql, id).map do |tuple|
+      tuple_to_list_hash(tuple)
+    end
+
+    ["Cataloger: #{get_cataloger_name_by_id(id)}", result]
   end
 
   def work_details(id)
