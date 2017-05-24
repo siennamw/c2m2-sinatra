@@ -4,8 +4,8 @@ CREATE VIEW overview_by_work AS
     works.title,
     works.secondary_title,
     countries.name                            AS country,
-    string_agg(DISTINCT directors.name, ', ') AS director,
-    string_agg(DISTINCT composers.name, ', ') AS composer,
+    string_agg(DISTINCT directors.name, '; ') AS director,
+    string_agg(DISTINCT composers.name, '; ') AS composer,
     works.year
 
   FROM works
