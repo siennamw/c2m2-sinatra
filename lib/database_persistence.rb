@@ -2,7 +2,7 @@ require 'pg'
 
 class DatabasePersistence
   def initialize(logger)
-    @db = PG.connect(dbname: 'c2m2') #ENV['DATABASE_NAME']
+    @db = PG.connect(dbname: ENV['DATABASE_NAME'])
     @logger = logger
   end
 
@@ -15,22 +15,18 @@ class DatabasePersistence
 
   def browse_composer(id)
     works_sql = 'SELECT work_id AS id FROM work_composer WHERE composer_id = $1'
+    sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
 
-    work_result = query(works_sql, id).map { |tuple| tuple['id'].to_i }.join(',')
-
-    sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{work_result})"
-    result = query(sql).map { |tuple| tuple_to_list_hash(tuple) }
+    result = query(sql, id).map { |tuple| tuple_to_list_hash(tuple) }
 
     ["Composer: #{get_composer_name_by_id(id)}", result]
   end
 
   def browse_director(id)
     works_sql = 'SELECT work_id AS id FROM work_director WHERE director_id = $1'
+    sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
 
-    work_result = query(works_sql, id).map { |tuple| tuple['id'].to_i }.join(',')
-
-    sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{work_result})"
-    result = query(sql).map { |tuple| tuple_to_list_hash(tuple) }
+    result = query(sql, id).map { |tuple| tuple_to_list_hash(tuple) }
 
     ["Director: #{get_director_name_by_id(id)}", result]
   end
@@ -38,6 +34,7 @@ class DatabasePersistence
   def browse_country(id)
     country = get_country_name_by_id(id)
     sql = 'SELECT * FROM overview_by_work WHERE country = $1'
+
     result = query(sql, country).map do |tuple|
       tuple_to_list_hash(tuple)
     end
@@ -46,149 +43,37 @@ class DatabasePersistence
   end
 
   def browse_media_type(id)
-    sql = <<~SQL
-      SELECT
-          media_types.id                            AS media_type_id,
-          works.id                                  AS work_id,
-          works.title,
-          works.secondary_title,
-          countries.name                            AS country,
-          string_agg(DISTINCT directors.name, ', ') AS director,
-          string_agg(DISTINCT composers.name, ', ') AS composer,
-          works.year
-        FROM media_types
-          LEFT JOIN works
-            ON works.media_type_id = media_types.id
-          LEFT JOIN work_composer
-            ON work_composer.work_id = works.id
-          LEFT JOIN composers
-            ON work_composer.composer_id = composers.id
-          LEFT JOIN work_director
-            ON work_director.work_id = works.id
-          LEFT JOIN directors
-            ON work_director.director_id = directors.id
-          LEFT JOIN countries
-            ON works.country_id = countries.id
-        WHERE media_type_id = $1
-        GROUP BY works.id, works.title, works.secondary_title, countries.name,
-          works.year, media_types.id
-        ORDER BY media_types.id, works.title;
-    SQL
+    works_sql = 'SELECT work_id FROM works WHERE media_type_id = $1'
+    sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
 
-    result = query(sql, id).map do |tuple|
-      tuple_to_list_hash(tuple)
-    end
+    result = query(sql, id).map { |tuple| tuple_to_list_hash(tuple) }
 
     ["Media Type: #{get_media_type_name_by_id(id)}", result]
   end
 
   def browse_collection(id)
-    sql = <<~SQL
-      SELECT
-          collections.id                            AS collection_id,
-          works.id                                  AS work_id,
-          works.title,
-          works.secondary_title,
-          countries.name                            AS country,
-          string_agg(DISTINCT directors.name, ', ') AS director,
-          string_agg(DISTINCT composers.name, ', ') AS composer,
-          works.year
-        FROM collections
-          LEFT JOIN works
-            ON works.collection_id = collections.id
-          LEFT JOIN work_composer
-            ON work_composer.work_id = works.id
-          LEFT JOIN composers
-            ON work_composer.composer_id = composers.id
-          LEFT JOIN work_director
-            ON work_director.work_id = works.id
-          LEFT JOIN directors
-            ON work_director.director_id = directors.id
-          LEFT JOIN countries
-            ON works.country_id = countries.id
-        WHERE collection_id = $1
-        GROUP BY works.id, works.title, works.secondary_title, countries.name,
-          works.year, collections.id
-        ORDER BY collections.id, works.title;
-    SQL
+    works_sql = 'SELECT work_id FROM works WHERE collection_id = $1'
+    sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
 
-    result = query(sql, id).map do |tuple|
-      tuple_to_list_hash(tuple)
-    end
+    result = query(sql, id).map { |tuple| tuple_to_list_hash(tuple) }
 
     ["Collection: #{get_collection_name_by_id(id)}", result]
   end
 
   def browse_material_format(id)
-    sql = <<~SQL
-      SELECT
-          material_formats.id                       AS material_format_id,
-          works.id                                  AS work_id,
-          works.title,
-          works.secondary_title,
-          countries.name                            AS country,
-          string_agg(DISTINCT directors.name, ', ') AS director,
-          string_agg(DISTINCT composers.name, ', ') AS composer,
-          works.year
-        FROM material_formats
-          LEFT JOIN works
-            ON works.material_format_id = material_formats.id
-          LEFT JOIN work_composer
-            ON work_composer.work_id = works.id
-          LEFT JOIN composers
-            ON work_composer.composer_id = composers.id
-          LEFT JOIN work_director
-            ON work_director.work_id = works.id
-          LEFT JOIN directors
-            ON work_director.director_id = directors.id
-          LEFT JOIN countries
-            ON works.country_id = countries.id
-        WHERE material_format_id = $1
-        GROUP BY works.id, works.title, works.secondary_title, countries.name,
-          works.year, material_formats.id
-        ORDER BY material_formats.id, works.title;
-    SQL
+    works_sql = 'SELECT work_id FROM works WHERE material_format_id = $1'
+    sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
 
-    result = query(sql, id).map do |tuple|
-      tuple_to_list_hash(tuple)
-    end
+    result = query(sql, id).map { |tuple| tuple_to_list_hash(tuple) }
 
     ["Material Format: #{get_material_format_name_by_id(id)}", result]
   end
 
   def browse_cataloger(id)
-    sql = <<~SQL
-      SELECT
-          catalogers.id                             AS cataloger_id,
-          works.id                                  AS work_id,
-          works.title,
-          works.secondary_title,
-          countries.name                            AS country,
-          string_agg(DISTINCT directors.name, ', ') AS director,
-          string_agg(DISTINCT composers.name, ', ') AS composer,
-          works.year
-        FROM catalogers
-          LEFT JOIN works
-            ON works.cataloger_id = catalogers.id
-          LEFT JOIN work_composer
-            ON work_composer.work_id = works.id
-          LEFT JOIN composers
-            ON work_composer.composer_id = composers.id
-          LEFT JOIN work_director
-            ON work_director.work_id = works.id
-          LEFT JOIN directors
-            ON work_director.director_id = directors.id
-          LEFT JOIN countries
-            ON works.country_id = countries.id
-        WHERE cataloger_id = $1
-        GROUP BY works.id, works.title, works.secondary_title, countries.name,
-          works.year, catalogers.id
-        ORDER BY catalogers.id, works.title;
-    SQL
+    works_sql = 'SELECT work_id FROM works WHERE cataloger_id = $1'
+    sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
 
-    result = query(sql, id).map do |tuple|
-      tuple_to_list_hash(tuple)
-    end
+    result = query(sql, id).map { |tuple| tuple_to_list_hash(tuple) }
 
     ["Cataloger: #{get_cataloger_name_by_id(id)}", result]
   end
