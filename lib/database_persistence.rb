@@ -14,7 +14,7 @@ class DatabasePersistence
   end
 
   def browse_composer(id)
-    works_sql = 'SELECT work_id AS id FROM work_composer WHERE composer_id = $1'
+    works_sql = 'SELECT work_id FROM work_composer WHERE composer_id = $1'
     sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
 
     result = query(sql, id).map { |tuple| tuple_to_list_hash(tuple) }
@@ -23,7 +23,7 @@ class DatabasePersistence
   end
 
   def browse_director(id)
-    works_sql = 'SELECT work_id AS id FROM work_director WHERE director_id = $1'
+    works_sql = 'SELECT work_id FROM work_director WHERE director_id = $1'
     sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
 
     result = query(sql, id).map { |tuple| tuple_to_list_hash(tuple) }
@@ -43,7 +43,7 @@ class DatabasePersistence
   end
 
   def browse_media_type(id)
-    works_sql = 'SELECT work_id FROM works WHERE media_type_id = $1'
+    works_sql = 'SELECT id FROM works WHERE media_type_id = $1'
     sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
 
     result = query(sql, id).map { |tuple| tuple_to_list_hash(tuple) }
@@ -52,7 +52,7 @@ class DatabasePersistence
   end
 
   def browse_collection(id)
-    works_sql = 'SELECT work_id FROM works WHERE collection_id = $1'
+    works_sql = 'SELECT id FROM works WHERE collection_id = $1'
     sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
 
     result = query(sql, id).map { |tuple| tuple_to_list_hash(tuple) }
@@ -61,7 +61,7 @@ class DatabasePersistence
   end
 
   def browse_material_format(id)
-    works_sql = 'SELECT work_id FROM works WHERE material_format_id = $1'
+    works_sql = 'SELECT id FROM works WHERE material_format_id = $1'
     sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
 
     result = query(sql, id).map { |tuple| tuple_to_list_hash(tuple) }
@@ -70,7 +70,7 @@ class DatabasePersistence
   end
 
   def browse_cataloger(id)
-    works_sql = 'SELECT work_id FROM works WHERE cataloger_id = $1'
+    works_sql = 'SELECT id FROM works WHERE cataloger_id = $1'
     sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
 
     result = query(sql, id).map { |tuple| tuple_to_list_hash(tuple) }
