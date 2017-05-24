@@ -173,7 +173,40 @@ class DatabasePersistence
   end
 
   def browse_material_format(id)
-    ["Material Format: #{get_material_format_name_by_id(id)}", nil]
+    sql = <<~SQL
+      SELECT
+          material_formats.id                              AS material_format_id,
+          works.id                                  AS work_id,
+          works.title,
+          works.secondary_title,
+          countries.name                            AS country,
+          string_agg(DISTINCT directors.name, ', ') AS director,
+          string_agg(DISTINCT composers.name, ', ') AS composer,
+          works.year
+        FROM material_formats
+          LEFT JOIN works
+            ON works.material_format_id = material_formats.id
+          LEFT JOIN work_composer
+            ON work_composer.work_id = works.id
+          LEFT JOIN composers
+            ON work_composer.composer_id = composers.id
+          LEFT JOIN work_director
+            ON work_director.work_id = works.id
+          LEFT JOIN directors
+            ON work_director.director_id = directors.id
+          LEFT JOIN countries
+            ON works.country_id = countries.id
+        WHERE material_format_id = $1
+        GROUP BY works.id, works.title, works.secondary_title, countries.name,
+          works.year, material_formats.id
+        ORDER BY material_formats.id, works.title;
+    SQL
+
+    result = query(sql, id).map do |tuple|
+      tuple_to_list_hash(tuple)
+    end
+
+    ["Material Format: #{get_material_format_name_by_id(id)}", result]
   end
 
   def browse_cataloger(id)
@@ -204,6 +237,8 @@ class DatabasePersistence
              cataloger_id: result['cataloger_id'].to_i,
              cataloger: result['cataloger']
     }
+
+    # TODO: fix multiple directors/composers handling
 
     directors_array = hash[:directors].split('&&')
     director_ids_array = hash[:director_ids].split('&&')
