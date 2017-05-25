@@ -29,7 +29,8 @@ CREATE TABLE catalogers (
   id    SERIAL PRIMARY KEY,
   name  VARCHAR(45) NOT NULL,
   email TEXT        NOT NULL UNIQUE CHECK ((position('@' IN email) > 1) AND
-                                           (position('.' IN email) > 0))
+                                           (position('.' IN email) > 0)),
+  description TEXT
 );
 
 CREATE TABLE works (
