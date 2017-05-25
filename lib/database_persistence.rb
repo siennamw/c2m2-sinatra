@@ -17,120 +17,135 @@ class DatabasePersistence
     works_sql = 'SELECT work_id FROM work_composer WHERE composer_id = $1'
     sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
 
-    result = query(sql, id).map { |tuple| tuple_to_list_hash(tuple) }
+    result = query(sql, id).map {|tuple| tuple_to_list_hash(tuple)}
 
-    ["Composer: #{get_composer_name_by_id(id)}", result]
+    name, link = get_composer_name_link_by_id(id)
+    ["Composer: #{name}", link, result]
   end
 
   def browse_director(id)
     works_sql = 'SELECT work_id FROM work_director WHERE director_id = $1'
     sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
 
-    result = query(sql, id).map { |tuple| tuple_to_list_hash(tuple) }
+    result = query(sql, id).map {|tuple| tuple_to_list_hash(tuple)}
 
-    ["Director: #{get_director_name_by_id(id)}", result]
+    name, link = get_director_name_link_by_id(id)
+    ["Director: #{name}", link, result]
   end
 
   def browse_country(id)
-    country = get_country_name_by_id(id)
+    country, description = get_country_name_desc_by_id(id)
+
     sql = 'SELECT * FROM overview_by_work WHERE country = $1'
 
     result = query(sql, country).map do |tuple|
       tuple_to_list_hash(tuple)
     end
 
-    ["Country: #{country}", result]
+    ["Country: #{country}", description, result]
   end
 
   def browse_media_type(id)
     works_sql = 'SELECT id FROM works WHERE media_type_id = $1'
     sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
 
-    result = query(sql, id).map { |tuple| tuple_to_list_hash(tuple) }
+    result = query(sql, id).map {|tuple| tuple_to_list_hash(tuple)}
 
-    ["Media Type: #{get_media_type_name_by_id(id)}", result]
+    name, description = get_media_type_name_desc_by_id(id)
+    ["Media Type: #{name}", description, result]
   end
 
   def browse_collection(id)
     works_sql = 'SELECT id FROM works WHERE collection_id = $1'
     sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
 
-    result = query(sql, id).map { |tuple| tuple_to_list_hash(tuple) }
+    result = query(sql, id).map {|tuple| tuple_to_list_hash(tuple)}
 
-    ["Collection: #{get_collection_name_by_id(id)}", result]
+    name, description = get_collection_name_desc_by_id(id)
+    ["Collection: #{name}", description, result]
   end
 
   def browse_material_format(id)
     works_sql = 'SELECT id FROM works WHERE material_format_id = $1'
     sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
 
-    result = query(sql, id).map { |tuple| tuple_to_list_hash(tuple) }
+    result = query(sql, id).map {|tuple| tuple_to_list_hash(tuple)}
 
-    ["Material Format: #{get_material_format_name_by_id(id)}", result]
+    name, description = get_material_format_name_desc_by_id(id)
+    ["Material Format: #{name}", description, result]
   end
 
   def browse_cataloger(id)
     works_sql = 'SELECT id FROM works WHERE cataloger_id = $1'
     sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
 
-    result = query(sql, id).map { |tuple| tuple_to_list_hash(tuple) }
+    result = query(sql, id).map {|tuple| tuple_to_list_hash(tuple)}
 
-    ["Cataloger: #{get_cataloger_name_by_id(id)}", result]
+    name, description = get_cataloger_name_desc_by_id(id)
+    ["Cataloger: #{name}", description, result]
   end
 
   def work_details(id)
     sql = 'SELECT * FROM work_details WHERE work_id = $1'
     result = query(sql, id).first
 
-    hash = { id: result['work_id'].to_i,
-             title: result['title'],
-             secondary_title: result['secondary_title'],
-             director_ids: result['director_ids'],
-             composer_ids: result['composer_ids'],
-             year: result['year'].to_i,
-             finding_aid_link: result['finding_aid_link'],
-             country_id: result['country_id'].to_i,
-             country: result['country'],
-             media_type_id: result['media_type_id'].to_i,
-             media_type: result['media_type'],
-             collection_id: result['collection_id'].to_i,
-             collection: result['collection'],
-             material_format_id: result['material_format_id'].to_i,
-             material_format: result['material_format'],
-             cataloger_id: result['cataloger_id'].to_i,
-             cataloger: result['cataloger']
-    }
+    if result
+      hash = { id: result['work_id'].to_i,
+               title: result['title'],
+               secondary_title: result['secondary_title'],
+               director_ids: result['director_ids'],
+               composer_ids: result['composer_ids'],
+               year: result['year'].to_i,
+               finding_aid_link: result['finding_aid_link'],
+               country_id: result['country_id'].to_i,
+               country: result['country'],
+               media_type_id: result['media_type_id'].to_i,
+               media_type: result['media_type'],
+               collection_id: result['collection_id'].to_i,
+               collection: result['collection'],
+               material_format_id: result['material_format_id'].to_i,
+               material_format: result['material_format'],
+               cataloger_id: result['cataloger_id'].to_i,
+               cataloger: result['cataloger']
+      }
 
-    if hash[:director_ids].include?('&&')
-      ids_director = hash[:director_ids].split('&&')
+      # get director and composer names from ids
+      # and load into arrays (order must match)
 
-      hash[:director_ids] = []
-      hash[:directors] = []
+      if hash[:director_ids].include?('&&')
+        ids_director = hash[:director_ids].split('&&')
 
-      ids_director.each do |director_id|
-        hash[:director_ids] << director_id.to_i
-        hash[:directors] << get_director_name_by_id(director_id.to_i)
+        hash[:director_ids] = []
+        hash[:directors] = []
+
+        ids_director.each do |director_id|
+          hash[:director_ids] << director_id.to_i
+          hash[:directors] << get_director_name_link_by_id(director_id.to_i)[0]
+        end
+      else
+        id = hash[:director_ids].to_i
+        hash[:directors] = [get_director_name_link_by_id(id)[0]]
+        hash[:director_ids] = [id]
+      end
+
+      if hash[:composer_ids].include?('&&')
+        ids_composer = hash[:composer_ids].split('&&')
+
+        hash[:composer_ids] = []
+        hash[:composers] = []
+
+        ids_composer.each do |composer_id|
+          hash[:composer_ids] << composer_id.to_i
+          hash[:composers] << get_composer_name_link_by_id(composer_id.to_i)[0]
+        end
+      else
+        id = hash[:composer_ids].to_i
+        hash[:composers] = [get_composer_name_link_by_id(id)[0]]
+        hash[:composer_ids] = [id]
       end
     else
-      hash[:directors] = [get_director_name_by_id(hash[:director_ids].to_i)]
-      hash[:director_ids] = [hash[:director_ids].to_i]
+      hash = nil
     end
-
-    if hash[:composer_ids].include?('&&')
-      ids_composer = hash[:composer_ids].split('&&')
-
-      hash[:composer_ids] = []
-      hash[:composers] = []
-
-      ids_composer.each do |composer_id|
-        hash[:composer_ids] << composer_id.to_i
-        hash[:composers] << get_composer_name_by_id(composer_id.to_i)
-      end
-    else
-      hash[:composers] = [get_composer_name_by_id(hash[:composer_ids].to_i)]
-      hash[:composer_ids] = [hash[:composer_ids].to_i]
-    end
-
 
     hash
   end
@@ -184,38 +199,45 @@ class DatabasePersistence
     }
   end
 
-  def get_composer_name_by_id(id)
-    sql = 'SELECT name FROM composers WHERE id = $1'
-    query(sql, id)[0]['name']
+  def get_composer_name_link_by_id(id)
+    sql = 'SELECT name, imdb_link FROM composers WHERE id = $1'
+    result = query(sql, id).first
+    [result['name'], result['imdb_link']]
   end
 
-  def get_director_name_by_id(id)
-    sql = 'SELECT name FROM directors WHERE id = $1'
-    query(sql, id)[0]['name']
+  def get_director_name_link_by_id(id)
+    sql = 'SELECT name, imdb_link FROM directors WHERE id = $1'
+    result = query(sql, id).first
+    [result['name'], result['imdb_link']]
   end
 
-  def get_country_name_by_id(id)
-    sql = 'SELECT name FROM countries WHERE id = $1'
-    query(sql, id)[0]['name']
+  def get_country_name_desc_by_id(id)
+    sql = 'SELECT name, description FROM countries WHERE id = $1'
+    result = query(sql, id).first
+    [result['name'], result['description']]
   end
 
-  def get_media_type_name_by_id(id)
-    sql = 'SELECT name FROM media_types WHERE id = $1'
-    query(sql, id)[0]['name']
+  def get_media_type_name_desc_by_id(id)
+    sql = 'SELECT name, description FROM media_types WHERE id = $1'
+    result = query(sql, id).first
+    [result['name'], result['description']]
   end
 
-  def get_collection_name_by_id(id)
-    sql = 'SELECT name FROM collections WHERE id = $1'
-    query(sql, id)[0]['name']
+  def get_collection_name_desc_by_id(id)
+    sql = 'SELECT name, description FROM collections WHERE id = $1'
+    result = query(sql, id).first
+    [result['name'], result['description']]
   end
 
-  def get_material_format_name_by_id(id)
-    sql = 'SELECT name FROM material_formats WHERE id = $1'
-    query(sql, id)[0]['name']
+  def get_material_format_name_desc_by_id(id)
+    sql = 'SELECT name, description FROM material_formats WHERE id = $1'
+    result = query(sql, id).first
+    [result['name'], result['description']]
   end
 
-  def get_cataloger_name_by_id(id)
-    sql = 'SELECT name FROM catalogers WHERE id = $1'
-    query(sql, id)[0]['name']
+  def get_cataloger_name_desc_by_id(id)
+    sql = 'SELECT name, description FROM catalogers WHERE id = $1'
+    result = query(sql, id).first
+    [result['name'], result['description']]
   end
 end

@@ -1,9 +1,18 @@
-<h2 class="center-text"><%= @heading %></h2>
+<h3 class="center-text"><%= @heading %></h3>
+
+<% if @imdb_link %>
+    <h5 class="center-text"><a href="<%= @imdb_link %>" target="new">Profile on IMDB.com</a></h5>
+<% end %>
+
+<% if @description %>
+    <h5 class="center-text"><a href="<%= @imdb_link %>" target="new">Profile on IMDB.com</a></h5>
+<% end %>
 
 <% if @info %>
     <h5 class="center-text"><%= @info %></h5>
 <% end %>
 
+<% if @result %>
 <table class="u-full-width">
   <tbody>
   <% @result.each do |row| %>
@@ -34,3 +43,6 @@
   <% end %>
   </tbody>
 </table>
+<% else %>
+    <h3 class="center-text">No results</h3>
+<% end %>

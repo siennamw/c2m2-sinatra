@@ -121,43 +121,43 @@ end
 
 get '/composer/:id' do
   @info = 'Listings sorted alphabetically by work title.'
-  @heading, @result = @storage.browse_composer(params[:id].to_i)
+  @heading, @imdb_link, @result = @storage.browse_composer(params[:id].to_i)
   erb :browse
 end
 
 get '/director/:id' do
   @info = 'Listings sorted alphabetically by work title.'
-  @heading, @result = @storage.browse_director(params[:id].to_i)
+  @heading, @imdb_link, @result = @storage.browse_director(params[:id].to_i)
   erb :browse
 end
 
 get '/country/:id' do
   @info = 'Listings sorted alphabetically by work title.'
-  @heading, @result = @storage.browse_country(params[:id].to_i)
+  @heading, @description, @result = @storage.browse_country(params[:id].to_i)
   erb :browse
 end
 
 get '/media_type/:id' do
   @info = 'Listings sorted alphabetically by work title.'
-  @heading, @result = @storage.browse_media_type(params[:id].to_i)
+  @heading, @description, @result = @storage.browse_media_type(params[:id].to_i)
   erb :browse
 end
 
 get '/collection/:id' do
   @info = 'Listings sorted alphabetically by work title.'
-  @heading, @result = @storage.browse_collection(params[:id].to_i)
+  @heading, @description, @result = @storage.browse_collection(params[:id].to_i)
   erb :browse
 end
 
 get '/material_format/:id' do
   @info = 'Listings sorted alphabetically by work title.'
-  @heading, @result = @storage.browse_material_format(params[:id].to_i)
+  @heading, @description, @result = @storage.browse_material_format(params[:id].to_i)
   erb :browse
 end
 
 get '/cataloger/:id' do
   @info = 'Listings sorted alphabetically by work title.'
-  @heading, @result = @storage.browse_cataloger(params[:id].to_i)
+  @heading, @description, @result = @storage.browse_cataloger(params[:id].to_i)
   erb :browse
 end
 
