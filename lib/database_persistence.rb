@@ -65,6 +65,16 @@ class DatabasePersistence
     ["Collection: #{name}", description, result]
   end
 
+  def browse_repository(id)
+    works_sql = 'SELECT work_id FROM work_repository WHERE repository_id = $1'
+    sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
+
+    result = query(sql, id).map {|tuple| tuple_to_list_hash(tuple)}
+
+    name, location, website = get_repository_name_loc_link_by_id(id)
+    ["Repository: #{name}", location, website, result]
+  end
+
   def browse_material_format(id)
     works_sql = 'SELECT id FROM works WHERE material_format_id = $1'
     sql = "SELECT * FROM overview_by_work WHERE work_id IN(#{works_sql})"
@@ -103,6 +113,8 @@ class DatabasePersistence
                media_type: result['media_type'],
                collection_id: result['collection_id'].to_i,
                collection: result['collection'],
+               repository_id: result['repository_id'],
+               repository: result['repository'],
                material_format_id: result['material_format_id'].to_i,
                material_format: result['material_format'],
                cataloger_id: result['cataloger_id'].to_i,
@@ -227,6 +239,12 @@ class DatabasePersistence
     sql = 'SELECT name, description FROM collections WHERE id = $1'
     result = query(sql, id).first
     [result['name'], result['description']]
+  end
+
+  def get_repository_name_loc_link_by_id(id)
+    sql = 'SELECT name, location, website FROM repositories WHERE id = $1'
+    result = query(sql, id).first
+    [result['name'], result['location'], result['website']]
   end
 
   def get_material_format_name_desc_by_id(id)

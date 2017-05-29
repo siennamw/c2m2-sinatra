@@ -149,6 +149,12 @@ get '/collection/:id' do
   erb :browse
 end
 
+get '/repository/:id' do
+  @info = 'Listings sorted alphabetically by work title.'
+  @heading, @repository_location, @repository_link, @result = @storage.browse_repository(params[:id].to_i)
+  erb :browse
+end
+
 get '/material_format/:id' do
   @info = 'Listings sorted alphabetically by work title.'
   @heading, @description, @result = @storage.browse_material_format(params[:id].to_i)

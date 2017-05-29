@@ -4,8 +4,16 @@
     <h5 class="center-text"><a href="<%= @imdb_link %>" target="new">Profile on IMDB.com</a></h5>
 <% end %>
 
+<% if @repository_link %>
+    <h5 class="center-text"><a href="<%= @repository_link %>" target="new">Repository Website</a></h5>
+<% end %>
+
+<% if @repository_location %>
+    <p class="center-text"><%= @repository_location %></p>
+<% end %>
+
 <% if @description %>
-    <h5 class="center-text"><a href="<%= @imdb_link %>" target="new">Profile on IMDB.com</a></h5>
+    <p class="center-text"><%= @description %></p>
 <% end %>
 
 <% if @info %>

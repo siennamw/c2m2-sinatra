@@ -26,10 +26,11 @@ CREATE TABLE collections (
 );
 
 CREATE TABLE catalogers (
-  id    SERIAL PRIMARY KEY,
-  name  VARCHAR(45) NOT NULL,
-  email TEXT        NOT NULL UNIQUE CHECK ((position('@' IN email) > 1) AND
-                                           (position('.' IN email) > 0)),
+  id          SERIAL PRIMARY KEY,
+  name        VARCHAR(45) NOT NULL,
+  email       TEXT        NOT NULL UNIQUE CHECK ((position('@' IN email) > 1)
+                                                 AND
+                                                 (position('.' IN email) > 0)),
   description TEXT
 );
 
@@ -81,7 +82,6 @@ CREATE TABLE production_companies (
   contact_info TEXT
 );
 
-
 CREATE TABLE publishers (
   id           SERIAL PRIMARY KEY,
   name         VARCHAR(100) NOT NULL,
@@ -101,7 +101,6 @@ CREATE TABLE work_composer (
   composer_id INTEGER NOT NULL REFERENCES composers (id),
   UNIQUE (work_id, composer_id)
 );
-
 
 CREATE TABLE work_director (
   id          SERIAL PRIMARY KEY,
