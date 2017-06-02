@@ -1,5 +1,5 @@
--- set up indexes
--- on delete cascade?
+-- TODO: set up indexes
+-- TODO: on delete cascade?
 
 CREATE TABLE countries (
   id          SERIAL PRIMARY KEY,
@@ -14,12 +14,6 @@ CREATE TABLE media_types (
 );
 
 CREATE TABLE material_formats (
-  id          SERIAL PRIMARY KEY,
-  name        VARCHAR(45) NOT NULL UNIQUE,
-  description TEXT
-);
-
-CREATE TABLE collections (
   id          SERIAL PRIMARY KEY,
   name        VARCHAR(45) NOT NULL UNIQUE,
   description TEXT
@@ -43,12 +37,11 @@ CREATE TABLE works (
            (year <= EXTRACT(YEAR FROM now()) :: INTEGER)),
   country_id         INTEGER REFERENCES countries (id),
   media_type_id      INTEGER                              NOT NULL REFERENCES media_types (id),
-  collection_id      INTEGER REFERENCES collections (id),
   finding_aid_link   TEXT,
   material_format_id INTEGER                              NOT NULL REFERENCES material_formats (id),
   rights_holder      VARCHAR(100),
 
-  -- items below this point formerly captured in CAT_NOTES table
+  -- TODO: below this point formerly captured in CAT_NOTES table
   cataloger_id       INTEGER REFERENCES catalogers (id)   NOT NULL,
   entry_date         TIMESTAMPTZ DEFAULT now()            NOT NULL,
   citation_source    TEXT,
@@ -64,35 +57,24 @@ CREATE TABLE repositories (
   website  TEXT
 );
 
+CREATE TABLE collections (
+  id            SERIAL PRIMARY KEY,
+  name          VARCHAR(45) NOT NULL UNIQUE,
+  repository_id INTEGER     NOT NULL REFERENCES repositories (id),
+  description   TEXT
+);
+
+CREATE TABLE work_collection (
+  id            SERIAL PRIMARY KEY,
+  work_id       INTEGER NOT NULL REFERENCES works (id),
+  collection_id INTEGER NOT NULL REFERENCES collections (id),
+  UNIQUE (work_id, collection_id)
+);
+
 CREATE TABLE composers (
   id        SERIAL PRIMARY KEY,
   name      VARCHAR(100) NOT NULL,
   imdb_link TEXT
-);
-
-CREATE TABLE directors (
-  id        SERIAL PRIMARY KEY,
-  name      VARCHAR(100) NOT NULL,
-  imdb_link TEXT
-);
-
-CREATE TABLE production_companies (
-  id           SERIAL PRIMARY KEY,
-  name         VARCHAR(100) NOT NULL,
-  contact_info TEXT
-);
-
-CREATE TABLE publishers (
-  id           SERIAL PRIMARY KEY,
-  name         VARCHAR(100) NOT NULL,
-  contact_info TEXT
-);
-
-CREATE TABLE work_repository (
-  id            SERIAL PRIMARY KEY,
-  work_id       INTEGER NOT NULL REFERENCES works (id),
-  repository_id INTEGER NOT NULL REFERENCES repositories (id),
-  UNIQUE (work_id, repository_id)
 );
 
 CREATE TABLE work_composer (
@@ -102,6 +84,12 @@ CREATE TABLE work_composer (
   UNIQUE (work_id, composer_id)
 );
 
+CREATE TABLE directors (
+  id        SERIAL PRIMARY KEY,
+  name      VARCHAR(100) NOT NULL,
+  imdb_link TEXT
+);
+
 CREATE TABLE work_director (
   id          SERIAL PRIMARY KEY,
   work_id     INTEGER NOT NULL REFERENCES works (id),
@@ -109,11 +97,23 @@ CREATE TABLE work_director (
   UNIQUE (work_id, director_id)
 );
 
+CREATE TABLE production_companies (
+  id           SERIAL PRIMARY KEY,
+  name         VARCHAR(100) NOT NULL,
+  contact_info TEXT
+);
+
 CREATE TABLE work_production_company (
   id                    SERIAL PRIMARY KEY,
   work_id               INTEGER NOT NULL REFERENCES works (id),
   production_company_id INTEGER NOT NULL REFERENCES production_companies (id),
   UNIQUE (work_id, production_company_id)
+);
+
+CREATE TABLE publishers (
+  id           SERIAL PRIMARY KEY,
+  name         VARCHAR(100) NOT NULL,
+  contact_info TEXT
 );
 
 CREATE TABLE work_publisher (

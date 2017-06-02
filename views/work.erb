@@ -1,5 +1,4 @@
 <% if @result %>
-
     <h3 class="center-text"><%= @result[:title] %>
       <% if @result[:secondary_title] %>
           : <%= @result[:secondary_title] %>
@@ -31,7 +30,9 @@
       <tr>
         <th>Year</th>
         <td>
-          <%= @result[:year] %>
+          <a href="/year/<%= @result[:year] %>">
+            <%= @result[:year] %>
+          </a>
         </td>
       </tr>
       <tr>
@@ -59,19 +60,23 @@
         </td>
       </tr>
       <tr>
-        <th>Collection</th>
+        <th>Collections</th>
         <td>
-          <a href="/collection/<%= @result[:collection_id] %>">
-            <%= @result[:collection] %>
-          </a>
+          <% @result[:collections].each_index do |index| %>
+              <a href="/collection/<%= @result[:collection_ids][index] %>">
+                <%= @result[:collections][index] %>
+              </a><br/>
+          <% end %>
         </td>
       </tr>
       <tr>
-        <th>Repository</th>
+        <th>Repositories</th>
         <td>
-          <a href="/repository/<%= @result[:repository_id] %>">
-            <%= @result[:repository] %>
-          </a>
+          <% @result[:repositories].each_index do |index| %>
+              <a href="/repository/<%= @result[:repository_ids][index] %>">
+                <%= @result[:repositories][index] %>
+              </a><br/>
+          <% end %>
         </td>
       </tr>
       <tr>

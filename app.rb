@@ -113,7 +113,7 @@ get '/work/:work_id' do
 end
 
 get '/browse' do
-  @heading = 'Browse'
+  @heading = 'Browse All'
   @info = 'Listings sorted alphabetically by work title.'
   @result = @storage.browse_all
   erb :browse
@@ -145,7 +145,7 @@ end
 
 get '/collection/:id' do
   @info = 'Listings sorted alphabetically by work title.'
-  @heading, @description, @result = @storage.browse_collection(params[:id].to_i)
+  @heading, @description, @repository_name, @repository_id, @result = @storage.browse_collection(params[:id].to_i)
   erb :browse
 end
 
@@ -164,6 +164,12 @@ end
 get '/cataloger/:id' do
   @info = 'Listings sorted alphabetically by work title.'
   @heading, @description, @result = @storage.browse_cataloger(params[:id].to_i)
+  erb :browse
+end
+
+get '/year/:year' do
+  @info = 'Listings sorted alphabetically by work title.'
+  @heading, @result = @storage.browse_year(params[:year].to_i)
   erb :browse
 end
 

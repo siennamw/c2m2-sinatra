@@ -32,45 +32,38 @@ INSERT INTO material_formats (id, name) VALUES
   (9, 'Contracts'),
   (10, 'Personal Papers and Other Items');
 
--- collections
-INSERT INTO collections (id, name) VALUES
-  (1, 'Michael W. Harris Collection'),
-  (2, 'Fumio Hayasaka Collection'),
-  (3, 'Maurice Jarre papers'),
-  (4, 'Dave Grusin manuscripts');
-
 -- cataloguers
 INSERT INTO catalogers (id, name, email) VALUES
   (1, 'Michael W. Harris', 'michael.w.harris@colorado.edu'),
   (2, 'Sienna M. Wood', 'sienna.wood@colorado.edu');
 
 -- works
-INSERT INTO works (id, title, year, country_id, media_type_id, collection_id, material_format_id, cataloger_id, citation_source)
+INSERT INTO works (id, title, year, country_id, media_type_id, material_format_id, cataloger_id, citation_source)
 VALUES
-  ('01012016', 'Silverado (Motion picture)', 1985, 1, 1, 1, 2, 1, 'Copy Owned'),
-  ('01022016', 'Matrix (Motion picture)', 1999, 1, 1, 1, 2, 1, 'Copy Owned'),
-  ('01032016', 'Batman (Motion picture : 1989)', 1989, 1, 1, 1, 2, 1,
+  ('01012016', 'Silverado (Motion picture)', 1985, 1, 1, 2, 1, 'Copy Owned'),
+  ('01022016', 'Matrix (Motion picture)', 1999, 1, 1, 2, 1, 'Copy Owned'),
+  ('01032016', 'Batman (Motion picture : 1989)', 1989, 1, 1, 2, 1,
    'Copy Owned'),
-  ('01042016', 'Edward Scissorhands (Motion picture)', 1990, 1, 1, 1, 2, 1,
+  ('01042016', 'Edward Scissorhands (Motion picture)', 1990, 1, 1, 2, 1,
    'Copy Owned'),
-  ('01052016', 'Willow (Motion picture)', 1988, 1, 1, 1, 2, 2, 'Copy Owned'),
-  ('01062016', 'Back to the future (Motion picture)', 1985, 1, 1, 1, 2, 1,
+  ('01052016', 'Willow (Motion picture)', 1988, 1, 1, 2, 2, 'Copy Owned'),
+  ('01062016', 'Back to the future (Motion picture)', 1985, 1, 1, 2, 1,
    'Copy Owned'),
-  ('01082016', 'Rashōmon (Motion picture)', 1950, 2, 1, 2, 1, 1, 'Copy Owned');
+  ('01082016', 'Rashōmon (Motion picture)', 1950, 2, 1, 1, 1, 'Copy Owned');
 
-INSERT INTO works (id, title, year, country_id, media_type_id, collection_id, finding_aid_link, material_format_id, cataloger_id, citation_source)
+INSERT INTO works (id, title, year, country_id, media_type_id, finding_aid_link, material_format_id, cataloger_id, citation_source)
 VALUES
-  ('01102016', 'Lawrence of Arabia (Motion picture)', 1962, 3, 1, 3,
+  ('01102016', 'Lawrence of Arabia (Motion picture)', 1962, 3, 1,
    'http://www.uwyo.edu/ahc/_files/pdffa/03261.pdf', 1, 1,
    'Institutional Website'),
-  ('01092016', 'Goonies', 1985, 1, 1, 4,
+  ('01092016', 'Goonies', 1985, 1, 1,
    'http://www.colorado.edu/amrc/sites/default/files/attached-files/AMRC-Grusin.pdf',
    1, 1, 'Institutional Contact');
 
-INSERT INTO works (id, title, secondary_title, year, country_id, media_type_id, collection_id, material_format_id, cataloger_id, citation_source)
+INSERT INTO works (id, title, secondary_title, year, country_id, media_type_id, material_format_id, cataloger_id, citation_source)
 VALUES
   ('01072016', 'Shichinin no samurai (Motion picture)', 'Seven Samurai', 1954,
-   2, 1, 2, 1, 1, 'Email with Repository');
+   2, 1, 1, 1, 'Email with Repository');
 
 -- repositories
 INSERT INTO repositories (id, name, location, website) VALUES
@@ -82,6 +75,26 @@ INSERT INTO repositories (id, name, location, website) VALUES
    'http://www.uwyo.edu/ahc/'),
   (100003, 'Archives of Modern Japanese Music at Meiji Gakuin University',
    'Tokyo, Japan', 'http://www.meijigakuin.ac.jp/library/amjm/en/');
+
+-- collections
+INSERT INTO collections (id, name, repository_id) VALUES
+  (1, 'Michael W. Harris Collection', 100000),
+  (2, 'Fumio Hayasaka Collection', 100003),
+  (3, 'Maurice Jarre papers', 100002),
+  (4, 'Dave Grusin manuscripts', 100001);
+
+-- work_collection
+INSERT INTO work_collection (work_id, collection_id) VALUES
+  (01012016, 1),
+  (01022016, 1),
+  (01032016, 1),
+  (01042016, 1),
+  (01052016, 1),
+  (01062016, 1),
+  (01072016, 2),
+  (01082016, 2),
+  (01092016, 4),
+  (01102016, 3);
 
 -- composers
 INSERT INTO composers (id, name, imdb_link) VALUES
@@ -95,6 +108,19 @@ INSERT INTO composers (id, name, imdb_link) VALUES
   (200006, 'Grusin, Dave', 'http://www.imdb.com/name/nm0006115/'),
   (200007, 'Jarre, Maurice', 'http://www.imdb.com/name/nm0003574/');
 
+-- work_composer
+INSERT INTO work_composer (composer_id, work_id) VALUES
+  (200000, 01012016),
+  (200001, 01022016),
+  (200002, 01032016),
+  (200002, 01042016),
+  (200003, 01052016),
+  (200004, 01062016),
+  (200005, 01072016),
+  (200005, 01082016),
+  (200006, 01092016),
+  (200007, 01102016);
+
 -- directors
 INSERT INTO directors (id, name, imdb_link) VALUES
   (300000, 'Kasdan, Lawrence, 1949-', 'http://www.imdb.com/name/nm0001410/'),
@@ -107,6 +133,20 @@ INSERT INTO directors (id, name, imdb_link) VALUES
    'http://www.imdb.com/name/nm0000041/'),
   (300007, 'Donner, Richard', 'http://www.imdb.com/name/nm0001149/'),
   (300008, 'Lean, David, 1908-1991', 'http://www.imdb.com/name/nm0000180/');
+
+-- work_director
+INSERT INTO work_director (director_id, work_id) VALUES
+  (300000, 01012016),
+  (300001, 01022016),
+  (300002, 01022016),
+  (300003, 01032016),
+  (300003, 01042016),
+  (300004, 01052016),
+  (300005, 01062016),
+  (300006, 01072016),
+  (300006, 01082016),
+  (300007, 01092016),
+  (300008, 01102016);
 
 -- production_companies
 INSERT INTO production_companies (id, name, contact_info) VALUES
@@ -134,50 +174,6 @@ INSERT INTO production_companies (id, name) VALUES
   (400016, 'Daiei Kabushiki Kaisha (1945-1971)'),
   (400017, 'Horizon Pictures (G.B.)');
 
--- publishers
-INSERT INTO publishers (id, name, contact_info) VALUES
-  (500000, 'Omni Music Publishing', 'http://www.omnimusicpublishing.com/');
-
--- work_repository
-INSERT INTO work_repository (repository_id, work_id) VALUES
-  (100000, 01012016),
-  (100000, 01022016),
-  (100000, 01032016),
-  (100000, 01042016),
-  (100000, 01052016),
-  (100000, 01062016),
-  (100003, 01072016),
-  (100003, 01082016),
-  (100001, 01092016),
-  (100002, 01102016);
-
--- work_composer
-INSERT INTO work_composer (composer_id, work_id) VALUES
-  (200000, 01012016),
-  (200001, 01022016),
-  (200002, 01032016),
-  (200002, 01042016),
-  (200003, 01052016),
-  (200004, 01062016),
-  (200005, 01072016),
-  (200005, 01082016),
-  (200006, 01092016),
-  (200007, 01102016);
-
--- work_director
-INSERT INTO work_director (director_id, work_id) VALUES
-  (300000, 01012016),
-  (300001, 01022016),
-  (300002, 01022016),
-  (300003, 01032016),
-  (300003, 01042016),
-  (300004, 01052016),
-  (300005, 01062016),
-  (300006, 01072016),
-  (300006, 01082016),
-  (300007, 01092016),
-  (300008, 01102016);
-
 -- work_production_company
 INSERT INTO work_production_company (production_company_id, work_id) VALUES
   (400000, 01012016),
@@ -201,6 +197,10 @@ INSERT INTO work_production_company (production_company_id, work_id) VALUES
   (400002, 01092016),
   (400013, 01092016),
   (400017, 01102016);
+
+-- publishers
+INSERT INTO publishers (id, name, contact_info) VALUES
+  (500000, 'Omni Music Publishing', 'http://www.omnimusicpublishing.com/');
 
 -- work_publisher
 INSERT INTO work_publisher (publisher_id, work_id) VALUES

@@ -4,6 +4,10 @@
     <h5 class="center-text"><a href="<%= @imdb_link %>" target="new">Profile on IMDB.com</a></h5>
 <% end %>
 
+<% if @repository_name %>
+    <h5 class="center-text">Holding Repository: <a href="/repository/<%= @repository_id %>"><%= @repository_name %></a></h5>
+<% end %>
+
 <% if @repository_link %>
     <h5 class="center-text"><a href="<%= @repository_link %>" target="new">Repository Website</a></h5>
 <% end %>
