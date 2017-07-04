@@ -38,6 +38,7 @@ CREATE TABLE works (
   country_id         INTEGER REFERENCES countries (id),
   media_type_id      INTEGER                              NOT NULL REFERENCES media_types (id),
   finding_aid_link   TEXT,
+  digital_copy_link  TEXT,
   material_format_id INTEGER                              NOT NULL REFERENCES material_formats (id),
   rights_holder      VARCHAR(100),
 
@@ -47,7 +48,6 @@ CREATE TABLE works (
   citation_source    TEXT,
   alias_alternates   TEXT,
   cataloging_notes   TEXT
-
 );
 
 CREATE TABLE repositories (

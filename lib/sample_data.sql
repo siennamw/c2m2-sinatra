@@ -24,11 +24,11 @@ INSERT INTO material_formats (id, name) VALUES
   (1, 'Manuscript Scores'),
   (2, 'Printed Scores and Parts'),
   (3, 'Short Scores'),
-  (4, 'Notebooks'),
+  (4, 'Sketches'),
   (5, 'Published Scores or Collections'),
   (6, 'Cue Sheets'),
-  (7, 'Master Recordings'),
-  (8, 'Published Recordings'),
+  (7, 'Working Notes'),
+  (8, 'Recordings'),
   (9, 'Contracts'),
   (10, 'Personal Papers and Other Items');
 
@@ -210,3 +210,46 @@ INSERT INTO work_publisher (publisher_id, work_id) VALUES
   (500000, 01042016),
   (500000, 01052016),
   (500000, 01062016);
+
+-- extreme sample data to test edge cases
+INSERT INTO works (id, title, secondary_title, year, country_id, media_type_id, finding_aid_link, digital_copy_link, material_format_id, cataloger_id, citation_source)
+VALUES
+  (1, 'Really, Really, Ridiculously Long Work Title is Here',
+      'Really, Really, Ridiculously Long Subtitle is Here', 2017, 3, 9,
+      'http://www.link-to-finding-aid.com/',
+      'http://www.link-to-digital-copy.com/', 8, 2, 'Testing 1, 2, 3...');
+
+INSERT INTO work_collection (work_id, collection_id) VALUES
+  (1, 1);
+
+INSERT INTO work_composer (composer_id, work_id) VALUES
+  (200000, 1),
+  (200001, 1),
+  (200002, 1),
+  (200003, 1),
+  (200004, 1),
+  (200005, 1),
+  (200006, 1),
+  (200007, 1);
+
+INSERT INTO work_director (director_id, work_id) VALUES
+  (300000, 1),
+  (300001, 1),
+  (300002, 1),
+  (300003, 1),
+  (300004, 1),
+  (300005, 1),
+  (300006, 1),
+  (300007, 1),
+  (300008, 1);
+
+INSERT INTO work_production_company (production_company_id, work_id) VALUES
+  (400000, 1),
+  (400001, 1),
+  (400002, 1),
+  (400003, 1),
+  (400004, 1),
+  (400005, 1);
+
+INSERT INTO work_publisher (publisher_id, work_id) VALUES
+  (500000, 1);

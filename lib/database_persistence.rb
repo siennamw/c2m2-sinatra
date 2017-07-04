@@ -122,6 +122,7 @@ class DatabasePersistence
         secondary_title: result['secondary_title'],
         year: result['year'].to_i,
         finding_aid_link: result['finding_aid_link'],
+        digital_copy_link: result['digital_copy_link'],
         country_id: result['country_id'].to_i,
         country: result['country'],
         media_type_id: result['media_type_id'].to_i,
@@ -151,9 +152,9 @@ class DatabasePersistence
     @db.exec_params(statement, params)
   end
 
-  def delimited_list_to_a(string)
-    if string && string.include?('&&')
-      string.split('&&').uniq
+  def delimited_list_to_a(string, delimiter = '&&')
+    if string && string.include?(delimiter)
+      string.split(delimiter).uniq
     else
       [string]
     end

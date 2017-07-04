@@ -44,6 +44,14 @@
         </td>
       </tr>
       <tr>
+        <th>Digital Copy Link</th>
+        <td>
+          <a href="<%= @result[:digital_copy_link] %>" target="new">
+            <%= @result[:digital_copy_link] %>
+          </a>
+        </td>
+      </tr>
+      <tr>
         <th>Country</th>
         <td>
           <a href="/country/<%= @result[:country_id] %>">

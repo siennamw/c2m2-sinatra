@@ -30,6 +30,7 @@ CREATE VIEW work_details AS
     works.secondary_title,
     works.year,
     works.finding_aid_link,
+    works.digital_copy_link,
     countries.id                            AS country_id,
     countries.name                          AS country,
     media_types.id                          AS media_type_id,
